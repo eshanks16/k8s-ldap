@@ -114,6 +114,13 @@ Once the placeholders have been updated, deploy:
 # This command will make sure that you have updated the placeholders
 grep -r '\${' ./gangway || kubectl apply -f ./gangway
 ```
+#### Apply Role-Binding
+
+Create a Role binding that grants the Active Directory Group permissions in the cluster. There is a rolebinding manifest in the repo that can be used as an example. Update the Group Name with your own environment information. NOTE: the rolebinding.yml example grants authenticated AD users administrative permissions on the cluster.
+
+| Placeholder | Description |
+|----|-------|
+| `${GROUP_NAME}` | The Group which will be granted admin access to the cluster. |
 
 ### Configure API server
 

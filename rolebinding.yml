@@ -8,4 +8,4 @@ roleRef:
   name: cluster-admin
 subjects:
 - kind: Group
-  name: k8s_access
+  name: ${GROUP_NAME}
