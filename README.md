@@ -56,11 +56,11 @@ The following table describes placeholders that must be updated before deploying
 | `${DNS_NAME}` | Update the placeholder with the domain that you own. For example, if you own `example.com`, the value of issuer should be `https://dex.example.com/dex` |
 | `${OIDC_CLIENT_SECRET}` | This is the secret that was generated before |
 | `${DEX_STATIC_ADMIN_PASSWORD_HASH}` | The bcrypt hash of the password you want to use for the admin user |
-| `${AD_HOST/PORT}` | The hostname of the ldap server and the port. Example ad01.domain.local:389 |
-| `${BIND_USER_DN}` | The bindDN of a user with read access to AD. Format: CN=binduser,cn=users,dc=domain,dc=local |
+| `${AD_HOST/PORT}` | The hostname of the ldap server and the port. Example `ad01.domain.local:389` |
+| `${BIND_USER_DN}` | The bindDN of a user with read access to AD. Format: `CN=binduser,cn=users,dc=domain,dc=local` |
 | `${BIND_PASSWORD}` | The password for the bind account |
-| `${BASE_USER_SEARCH_DN}` | The distinguished name of a directory to search for AD Users. Format: dc=domain,dc=local|
-| `${BASE_GROUP_SEARCH_DN}` | The distinguished name of a directory to search for AD groups. Format: dc=domain,dc=local |
+| `${BASE_USER_SEARCH_DN}` | The distinguished name of a directory to search for AD Users. Format: `dc=domain,dc=local`|
+| `${BASE_GROUP_SEARCH_DN}` | The distinguished name of a directory to search for AD groups. Format: `dc=domain,dc=local` |
 
 
 Update the following files before deploying:
