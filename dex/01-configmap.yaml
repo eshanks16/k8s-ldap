@@ -1,0 +1,90 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: dex
+data:
+  config.yaml: |
+    issuer: https://dex.{DNS_NAME}/dex
+    storage:
+      type: sqlite3
+      config:
+        file: dex.db
+
+    # Configuration for the HTTP endpoints.
+    web:
+      http: 0.0.0.0:5556
+
+    staticClients:
+    - id: gangway
+      redirectURIs:
+      - https://gangway.{DNS_NAME}/callback
+      name: "Heptio Gangway"
+      secret: ${OIDC_CLIENT_SECRET}
+
+
+    connectors:
+    - type: ldap
+      id: ldap
+      name: LDAP
+      config:
+        host: ${AD_HOST/PORT}  #Address of AD Server
+
+        # Following field is required if the LDAP host is not using TLS (port 389).
+        # Because this option inherently leaks passwords to anyone on the same network
+        # as dex, THIS OPTION MAY BE REMOVED WITHOUT WARNING IN A FUTURE RELEASE.
+        #
+        insecureNoSSL: true
+
+        # If a custom certificate isn't provide, this option can be used to turn on
+        # TLS certificate checks. As noted, it is insecure and shouldn't be used outside
+        # of explorative phases.
+        #
+        insecureSkipVerify: true
+
+        # When connecting to the server, connect using the ldap:// protocol then issue
+        # a StartTLS command. If unspecified, connections will use the ldaps:// protocol
+        #
+        # startTLS: true
+
+        # Path to a trusted root certificate file. Default: use the host's root CA.
+        # rootCA: /etc/dex/ldap.ca
+
+        bindDN: ${BIND_USER_DN}
+        bindPW: ${BIND_PASSWORD}
+
+        # The attribute to display in the provided password prompt. 
+        usernamePrompt: AD Username
+
+        # User search maps a username and password entered by a user to a LDAP entry.
+        userSearch:
+          baseDN: ${BASE_USER_SEARCH_DN} # BaseDN to start the search from. 
+          # Optional filter to apply when searching the directory.
+          filter: "(objectClass=person)"
+
+          # username attribute used for comparing user entries. This will be translated
+          # and combined with the other filter as "(<attr>=<username>)".
+          username: sAMAccountName
+          # The following three fields are direct mappings of attributes on the user entry.
+          # String representation of the user.
+          idAttr: sAMAccountName
+          # Required. Attribute to map to Email.
+          emailAttr: userPrincipalName
+          # Maps to display name of users. No default value.
+          nameAttr: displayName
+
+        # Group search queries for groups given a user entry.
+        groupSearch:
+          # BaseDN to start the search from. It will translate to the query
+          # "(&(objectClass=group)(member=<user uid>))".
+          baseDN: ${BASE_GROUP_SEARCH_DN}
+          # Optional filter to apply when searching the directory.
+          filter: "(objectClass=group)"
+
+          # Following two fields are used to match a user to a group. It adds an additional
+          # requirement to the filter that an attribute in the group must match the user's
+          # attribute value.
+          userAttr: distinguishedName
+          groupAttr: member
+
+          # Represents group name.
+          nameAttr: cn

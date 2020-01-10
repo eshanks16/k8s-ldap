@@ -1,0 +1,55 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: gangway
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gangway
+  namespace: gangway
+data:
+  gangway.yaml: |
+    # The cluster name. Used in UI and kubectl config instructions.
+    # Env var: GANGWAY_CLUSTER_NAME
+    clusterName: "${CLUSTER_NAME}"
+
+    # OAuth2 URL to start authorization flow.
+    # Env var: GANGWAY_AUTHORIZE_URL
+    authorizeURL: "https://dex.${DNS_NAME}/dex/auth" #replace the domain name with your domain
+
+    # OAuth2 URL to obtain access tokens.
+    # Env var: GANGWAY_TOKEN_URL
+    tokenURL: "https://dex.${DNS_NAME}/dex/token" #replace the domain name with your domain
+
+    # Used to specify the scope of the requested Oauth authorization.
+    scopes: ["openid", "profile", "email", "offline_access", "groups"]
+
+    # Where to redirect back to. This should be a URL where gangway is reachable.
+    # Typically this also needs to be registered as part of the oauth application
+    # with the oAuth provider.
+    # Env var: GANGWAY_REDIRECT_URL
+    redirectURL: "https://gangway.${DNS_NAME}callback" #replace the domain name with your domain
+
+    # API client ID as indicated by the identity provider
+    # Env var: GANGWAY_CLIENT_ID
+    clientID: "gangway"
+
+    # API client secret as indicated by the identity provider
+    # Env var: GANGWAY_CLIENT_SECRET
+    clientSecret: "${OIDC_CLIENT_SECRET}"
+
+    # The JWT claim to use as the username. This is used in UI.
+    # Default is "nickname".
+    # Env var: GANGWAY_USERNAME_CLAIM
+    usernameClaim: "sub"
+
+    # The JWT claim to use as the email claim. This is used to name the
+    # "user" part of the config. Default is "email".
+    # Env var: GANGWAY_EMAIL_CLAIM
+    emailClaim: "email"
+
+    # The API server endpoint used to configure kubectl
+    # Env var: GANGWAY_APISERVER_URL
+    apiServerURL: ${KUBERNETES_APISERVER_URL} #This should be your k8s API URL example https://name.domain.com:6443

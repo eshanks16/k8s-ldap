@@ -1,0 +1,32 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: dex
+spec:
+  selector:
+    app: dex
+  ports:
+  - port: 5556
+    targetPort: https
+    name: https
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: dex
+  annotations:
+    kubernetes.io/tls-acme: "true"
+    cert-manager.io/cluster-issuer: "letsencrypt-production"
+spec:
+  tls:
+  - hosts:
+    - dex.${DNS_NAME}
+    secretName: dex-tls
+  rules:
+  - host: dex.${DNS_NAME}
+    http:
+      paths:
+      - backend:
+          serviceName: dex
+          servicePort: https
